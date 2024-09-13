@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { Filter } from './filter';
-import { excludes, includes } from '../dist';
+import { excludes, includes } from './operators.js';
 
 test('fixed', () => {
   let greetingFilter: Filter;

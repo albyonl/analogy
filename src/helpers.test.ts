@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import type { Dynamic } from '../dist';
+import type { Dynamic } from './types.js';
 import { excludes, includes, not } from './operators';
 import type { Group, Operator, Value } from './types';
 import {
