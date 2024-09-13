@@ -1,0 +1,47 @@
+{
+  "type": "module",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "ci": "npm run build && npm run check-format && npm run check-exports && npm run lint",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
+    "lint": "tsc",
+    "test": "vitest run"
+  },
+  "description": "A Library for building filters and mappers.",
+  "keywords": [
+    "filter",
+    "analogy",
+    "mapper"
+  ],
+  "homepage": "https://github.com/albyonl/analogy",
+  "bugs": {
+    "url": "https://github.com/albyonl/analogy/issues"
+  },
+  "author": "albyonl (https://alby.onl)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albyonl/analogy.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.16.2",
+    "@types/node": "^22.4.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.0"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.cjs"
+    }
+  }
+}
