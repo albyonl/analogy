@@ -1,5 +1,0 @@
----
-'analogy': patch
----
-
-Initial release
