@@ -20,20 +20,21 @@ test('tuple', () => {
   ).toBeTruthy();
 });
 
-
 test('dynamic', () => {
   let greetingFilter: Filter;
 
-  greetingFilter = new Filter([['hello', val => val]]);
+  greetingFilter = new Filter([['hello', (val) => val]]);
   expect(
-    greetingFilter.match('hey dynamic').every((filter) => filter === 'hello dynamic'),
+    greetingFilter
+      .match('hey dynamic')
+      .every((filter) => filter === 'hello dynamic'),
   ).toBeTruthy();
 });
 
 test('operators', () => {
   let greetingFilter: Filter;
 
-  greetingFilter = new Filter([[[ excludes("hello"), includes("hi") ], "hey"]]);
+  greetingFilter = new Filter([[[excludes('hello'), includes('hi')], 'hey']]);
 
   expect(greetingFilter.match('hi hello everyone')).length(0);
   expect(greetingFilter.match('hi everyone')).length(1);

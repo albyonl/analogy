@@ -2,7 +2,6 @@ import { isDynamic, isFixed, isMultiValue } from './helpers';
 import type { Value } from './types';
 
 export const parseValues = (value: Value | Value[], sku: string): string[] => {
-  
   let parsed: string[] = [];
 
   const getFixedOrDynamicValue = (value: Value): string | null => {

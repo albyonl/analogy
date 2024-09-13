@@ -1,9 +1,4 @@
-import {
-  isDynamic,
-  isFixed,
-  isGroup,
-  isOperators,
-} from './helpers.js';
+import { isDynamic, isFixed, isGroup, isOperators } from './helpers.js';
 import { parseValues } from './parsers';
 import type { Match } from './types';
 

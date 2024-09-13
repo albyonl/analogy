@@ -18,13 +18,13 @@ test('single', () => {
   let parsedValues = parseValues(value, processable);
 
   for (const value of parsedValues) {
-    expect(value).toBeTypeOf("string")
+    expect(value).toBeTypeOf('string');
   }
 
   value = () => 'test';
   parsedValues = parseValues(value, processable);
 
   for (const value of parsedValues) {
-    expect(value).toBeTypeOf("string");
+    expect(value).toBeTypeOf('string');
   }
 });
