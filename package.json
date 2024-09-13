@@ -11,7 +11,7 @@
     "lint": "tsc",
     "test": "vitest run",
     "dev": "vitest",
-    "local-release": "changeset version && changeset publish",
+    "release": "changeset version && changeset publish",
     "prepublishOnly": "npm run ci"
   },
   "description": "A Library for building filters and mappers.",
