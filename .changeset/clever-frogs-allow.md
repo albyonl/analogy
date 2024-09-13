@@ -1,0 +1,5 @@
+---
+'analogy': patch
+---
+
+Initial release
