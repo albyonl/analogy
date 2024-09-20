@@ -1,4 +1,4 @@
-import { isDynamic, isFixed, isGroup, isOperators } from './helpers.js';
+import { isDynamic, isString, isGroup, isOperators } from './helpers.js';
 import { parseValues } from './parsers';
 import type { Match } from './types';
 
@@ -10,42 +10,46 @@ export class Filter {
   }
 
   public match(sku: string): string[] {
+
     let output: string[] = [];
 
     for (const match of this.matches) {
       isGroup(match, ([condition, value]) => {
-        let opsats: boolean[] = [];
+        let operatorResults: boolean[] = [];
 
         isOperators(condition, (operators) => {
+
           for (const [operator, ...operands] of operators) {
             if (operator === 'all') {
               // if every single value is included in the SKU, satisfy.
-              opsats.push(operands.every((operand) => sku.includes(operand)));
+              operatorResults.push(operands.every((operand) => sku.includes(operand)));
             }
 
             if (operator === 'any') {
               // if any of the values are included in the SKU, satisfy.
-              opsats.push(operands.some((operand) => sku.includes(operand)));
+              operatorResults.push(operands.some((operand) => sku.includes(operand)));
             }
 
             if (operator === 'none') {
               // if none of the values are included in the SKU, satisfy.
-              opsats.push(!operands.some((value) => sku.includes(value)));
+              operatorResults.push(!operands.some((value) => sku.includes(value)));
             }
           }
+          
         });
 
-        isFixed(condition, (fixed) => {
-          opsats.push(sku.includes(fixed));
+        isString(condition, (fixed) => {
+          operatorResults.push(sku.includes(fixed));
         });
 
-        if (!opsats.includes(false)) {
+        // if all operators are satisfied parse values and add it to ouput
+        if (!operatorResults.includes(false)) {
           const parsedValues = parseValues(value, sku);
           output.push(...parsedValues);
         }
       });
 
-      isFixed(match, (fixed) => sku.includes(fixed) && output.push(fixed));
+      isString(match, (fixed) => sku.includes(fixed) && output.push(fixed));
       isDynamic(match, (dynamic) => output.push(dynamic(sku)));
     }
 

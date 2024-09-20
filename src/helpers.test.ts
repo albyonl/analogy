@@ -1,15 +1,17 @@
 import { expect, test } from 'vitest';
-import type { Dynamic } from './types.js';
+import type { Dynamic, FunctionValue } from './types.js';
 import { excludes, includes, not } from './operators';
 import type { Group, Operator, Value } from './types';
 import {
   isDynamic,
-  isFixed,
+  isString,
+  isFunctionValue,
   isGroup,
   isMultiValue,
   isOperators,
 } from './helpers';
 
+const functionValue: FunctionValue = ["replace", [["bong", "bing"]], "bong"];
 const multiValue: Value[] = ['hola', 'hello'];
 const singleValue: Value = 'hej';
 const operators: Operator[] = [
@@ -39,16 +41,27 @@ test('isDynamic', () => {
   expect(valid).toBeTruthy();
 });
 
-test('isFixed', () => {
+test('isString', () => {
   let valid = false;
-  isFixed(fixed, () => (valid = true));
+  isString(fixed, () => (valid = true));
   expect(valid).toBeTruthy();
 });
 
 test('isMultiValue', () => {
   let valid = false;
+
   isMultiValue(multiValue, () => (valid = true));
-  expect(valid).toBeTruthy();
   isMultiValue(singleValue, () => (valid = false));
+  isMultiValue(functionValue, () => (valid = false));
+
+  expect(valid).toBeTruthy();
+});
+
+test('isFunctionValue', () => {
+  let valid = false;
+
+  isFunctionValue(functionValue, () => (valid = true));
+  isFunctionValue(multiValue, () => (valid = false));
+
   expect(valid).toBeTruthy();
 });
