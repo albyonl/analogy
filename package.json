@@ -46,5 +46,6 @@
       "import": "./dist/index.js",
       "default": "./dist/index.cjs"
     }
-  }
+  },
+  "types": "./dist/index.d.ts"
 }
