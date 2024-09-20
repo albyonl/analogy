@@ -8,21 +8,19 @@ import type { Value } from './types';
 
 /**
  * Flattens a value into an array of strings
- * @param value 
- * @param sku 
+ * @param value
+ * @param sku
  * @returns {string[]} filters
  */
 export const parseValues = (value: Value | Value[], sku: string): string[] => {
-
   let parsed: string[] = [];
 
   /**
    * Flattens the value of a single Value
-   * @param value 
+   * @param value
    * @returns {string[]} filters
-   */ 
+   */
   const getValue = (value: Value): string[] => {
-
     let flattenedValue: string[] = [];
 
     isDynamicValue(value, (dynamic) => {
@@ -37,9 +35,9 @@ export const parseValues = (value: Value | Value[], sku: string): string[] => {
       /**
        * Function which wraps a return value and replaces based on a map
        * Will re-call getValue to enable nested values
-       * @param fvalue 
-       * @param replaceMap 
-       * @returns 
+       * @param fvalue
+       * @param replaceMap
+       * @returns
        */
       const parseReplacedValues = (
         fvalue: Value,
@@ -48,11 +46,11 @@ export const parseValues = (value: Value | Value[], sku: string): string[] => {
         const replacedValues = getValue(fvalue).flatMap((replaceSet) => {
           let replacedSet: string[] = [];
           for (const [source, dest] of replaceMap) {
-              replacedSet.push(replaceSet.replaceAll(source, dest))
+            replacedSet.push(replaceSet.replaceAll(source, dest));
           }
-          return replacedSet
+          return replacedSet;
         });
-        return replacedValues
+        return replacedValues;
       };
 
       /**
@@ -60,32 +58,35 @@ export const parseValues = (value: Value | Value[], sku: string): string[] => {
        */
       if (functionValue[0] === 'replace') {
         const [_, maps, fvalue] = functionValue;
-        flattenedValue.push(...parseReplacedValues(fvalue, maps))
+        flattenedValue.push(...parseReplacedValues(fvalue, maps));
       }
 
       /**
        * Regex returns the matched value from a regex pattern
        */
-      if(functionValue[0] === 'regex-match') {
+      if (functionValue[0] === 'regex-match') {
         const [_, regex] = functionValue;
         const match = sku.match(regex);
-        if(match && match[1]) flattenedValue.push(match[1])
+        if (match && match[1]) flattenedValue.push(match[1]);
       }
-
     });
 
-    return flattenedValue
+    return flattenedValue;
   };
 
-  isMultiValue(value, (multi) => {
-    for (const val of multi) {
-      const result = getValue(val);
-      if (result != null) parsed.push(...result);
-    }
-  }, (single) => {
-    const result = getValue(single);
-    if(result !== null) parsed.push(...result)
-  });
+  isMultiValue(
+    value,
+    (multi) => {
+      for (const val of multi) {
+        const result = getValue(val);
+        if (result != null) parsed.push(...result);
+      }
+    },
+    (single) => {
+      const result = getValue(single);
+      if (result !== null) parsed.push(...result);
+    },
+  );
 
-  return parsed.filter(val => val !== null)
+  return parsed.filter((val) => val !== null);
 };

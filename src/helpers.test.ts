@@ -11,7 +11,7 @@ import {
   isOperators,
 } from './helpers';
 
-const functionValue: FunctionValue = ["replace", [["bong", "bing"]], "bong"];
+const functionValue: FunctionValue = ['replace', [['bong', 'bing']], 'bong'];
 const multiValue: Value[] = ['hola', 'hello'];
 const singleValue: Value = 'hej';
 const operators: Operator[] = [

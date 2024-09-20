@@ -10,7 +10,6 @@ export class Filter {
   }
 
   public match(sku: string): string[] {
-
     let output: string[] = [];
 
     for (const match of this.matches) {
@@ -18,24 +17,28 @@ export class Filter {
         let operatorResults: boolean[] = [];
 
         isOperators(condition, (operators) => {
-
           for (const [operator, ...operands] of operators) {
             if (operator === 'all') {
               // if every single value is included in the SKU, satisfy.
-              operatorResults.push(operands.every((operand) => sku.includes(operand)));
+              operatorResults.push(
+                operands.every((operand) => sku.includes(operand)),
+              );
             }
 
             if (operator === 'any') {
               // if any of the values are included in the SKU, satisfy.
-              operatorResults.push(operands.some((operand) => sku.includes(operand)));
+              operatorResults.push(
+                operands.some((operand) => sku.includes(operand)),
+              );
             }
 
             if (operator === 'none') {
               // if none of the values are included in the SKU, satisfy.
-              operatorResults.push(!operands.some((value) => sku.includes(value)));
+              operatorResults.push(
+                !operands.some((value) => sku.includes(value)),
+              );
             }
           }
-          
         });
 
         isString(condition, (fixed) => {

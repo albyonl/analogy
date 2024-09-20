@@ -1,4 +1,4 @@
-export const FunctionValueLiterals = ["regex-match", "replace"];
+export const FunctionValueLiterals = ['regex-match', 'replace'];
 
 export type Dynamic = (sku: string) => string;
 
