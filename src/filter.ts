@@ -1,4 +1,4 @@
-import { isDynamic, isString, isGroup, isOperators } from './helpers.js';
+import { isString, isGroup } from './helpers.js';
 import { parseValues } from './parsers';
 import type { Match } from './types';
 
@@ -13,37 +13,28 @@ export class Filter {
     let output: string[] = [];
 
     for (const match of this.matches) {
-      isGroup(match, ([condition, value]) => {
+      isGroup(match, ([conditions, value]) => {
         let operatorResults: boolean[] = [];
 
-        isOperators(condition, (operators) => {
-          for (const [operator, ...operands] of operators) {
-            if (operator === 'all') {
-              // if every single value is included in the SKU, satisfy.
-              operatorResults.push(
-                operands.every((operand) => sku.includes(operand)),
-              );
-            }
-
-            if (operator === 'any') {
-              // if any of the values are included in the SKU, satisfy.
-              operatorResults.push(
-                operands.some((operand) => sku.includes(operand)),
-              );
-            }
-
-            if (operator === 'none') {
-              // if none of the values are included in the SKU, satisfy.
-              operatorResults.push(
-                !operands.some((value) => sku.includes(value)),
-              );
-            }
+        for (const condition of conditions) {
+          if (condition.operator === 'all') {
+            operatorResults.push(
+              condition.operands.every((operand) => sku.includes(operand)),
+            );
           }
-        });
 
-        isString(condition, (fixed) => {
-          operatorResults.push(sku.includes(fixed));
-        });
+          if (condition.operator === 'any') {
+            operatorResults.push(
+              condition.operands.some((operand) => sku.includes(operand)),
+            );
+          }
+
+          if (condition.operator === 'none') {
+            operatorResults.push(
+              !condition.operands.some((operand) => sku.includes(operand)),
+            );
+          }
+        }
 
         // if all operators are satisfied parse values and add it to ouput
         if (!operatorResults.includes(false)) {
@@ -52,8 +43,10 @@ export class Filter {
         }
       });
 
-      isString(match, (fixed) => sku.includes(fixed) && output.push(fixed));
-      isDynamic(match, (dynamic) => output.push(dynamic(sku)));
+      isString(
+        match,
+        (stringValue) => sku.includes(stringValue) && output.push(stringValue),
+      );
     }
 
     return output;
