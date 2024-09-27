@@ -41,8 +41,9 @@ test('operators', () => {
 test('replace', () => {
   let greetingFilter: Filter;
   greetingFilter = new Filter([
-    ['bong', ['replace', [['bong', 'bing']], (value) => value]],
+    ['bong', replace([['bong', 'bing']], (value) => value)],
   ]);
+
   const result = greetingFilter.match('bong');
   expect(result).length(1);
   expect(result[0]).toBe('bing');

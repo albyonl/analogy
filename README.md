@@ -44,6 +44,20 @@ const animalFilter = new Filter([
     [includes('dog'), excludes('cat')],
     ['dog detected', 'no cats present'],
   ],
+
+  // Use function values to replace animal noises
+  [
+    [
+      [includes('bird'), includes('cat')],
+      replace(
+        [
+          ['howl', 'chirp'],
+          ['squeak', 'meow'],
+        ],
+        (value) => value,
+      ),
+    ],
+  ],
 ]);
 
 // Run some test cases:
@@ -55,6 +69,9 @@ console.log(animalFilter.match('ragdoll cat meows at the dog'));
 
 console.log(animalFilter.match('The lion roars, and the dog barks.'));
 // Output: ["woof", "dog detected", "no cats present"]
+
+console.log(animalFilter.match('The bird howls, and the cat squeaks'));
+// Output ["chirp", "meow"]
 ```
 
 ---
