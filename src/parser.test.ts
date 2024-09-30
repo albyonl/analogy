@@ -1,30 +1,21 @@
 import { parseValues } from './parsers';
 import { test, expect } from 'vitest';
 import type { Value } from './types';
+import { dynamic, regex, replace } from './values';
 
 const processable =
   'hello, this is a test string which works for multi and single values!';
 
-test('multi', () => {
-  const values: Value[] = ['hello', () => 'multi'];
+test('mixed', () => {
+  const values: Value[] = [
+    replace(["hello"], ["hello", ""]),
+    regex(/\btest\b/g),
+    dynamic((input) => input),
+    "test"
+  ]
   const parsedValues = parseValues(values, processable);
   for (const value of parsedValues) {
-    expect(value !== null && typeof value === 'string');
+    expect(value !== null && value === "test");
   }
 });
 
-test('single', () => {
-  let value: Value = 'single';
-  let parsedValues = parseValues(value, processable);
-
-  for (const value of parsedValues) {
-    expect(value).toBeTypeOf('string');
-  }
-
-  value = () => 'test';
-  parsedValues = parseValues(value, processable);
-
-  for (const value of parsedValues) {
-    expect(value).toBeTypeOf('string');
-  }
-});

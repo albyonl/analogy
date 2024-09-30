@@ -1,4 +1,4 @@
-import { isString, isGroup } from './helpers.js';
+import { match as _match } from './helpers.js';
 import { parseValues } from './parsers';
 import type { Match } from './types';
 
@@ -13,26 +13,26 @@ export class Filter {
     let output: string[] = [];
 
     for (const match of this.matches) {
-      isGroup(match, ([conditions, value]) => {
+
+      _match.isGroup(match, ([conditions, value]) => {
         let operatorResults: boolean[] = [];
 
         for (const condition of conditions) {
-          if (condition.operator === 'all') {
-            operatorResults.push(
-              condition.operands.every((operand) => sku.includes(operand)),
-            );
+          if (condition.operator === 'includes') {
+            const sat = condition.operands.every((operand) => sku.includes(operand))
+            operatorResults.push(sat);
           }
 
           if (condition.operator === 'any') {
-            operatorResults.push(
-              condition.operands.some((operand) => sku.includes(operand)),
-            );
+            const sat = condition.operands.some((operand) => sku.includes(operand));
+            operatorResults.push(sat);
+        
           }
 
-          if (condition.operator === 'none') {
-            operatorResults.push(
-              !condition.operands.some((operand) => sku.includes(operand)),
-            );
+          if (condition.operator === 'excludes') {
+            const sat = !condition.operands.some((operand) => sku.includes(operand))
+            operatorResults.push(sat);
+          
           }
         }
 
@@ -43,7 +43,7 @@ export class Filter {
         }
       });
 
-      isString(
+      _match.isString(
         match,
         (stringValue) => sku.includes(stringValue) && output.push(stringValue),
       );
