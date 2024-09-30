@@ -8,14 +8,13 @@ const processable =
 
 test('mixed', () => {
   const values: Value[] = [
-    replace(["hello"], ["hello", ""]),
+    replace(['hello'], ['hello', '']),
     regex(/\btest\b/g),
     dynamic((input) => input),
-    "test"
-  ]
+    'test',
+  ];
   const parsedValues = parseValues(values, processable);
   for (const value of parsedValues) {
-    expect(value !== null && value === "test");
+    expect(value !== null && value === 'test');
   }
 });
-

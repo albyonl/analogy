@@ -23,8 +23,7 @@ test('operators', () => {
   greetingFilter = new Filter([
     [
       [excludes('hello'), includes('hi')],
-      [fixed('hi')] // you can also simply do: ["hi"], without the need for fixed(). But I'd reccomend you don't.
-    
+      [fixed('hi')], // you can also simply do: ["hi"], without the need for fixed(). But I'd reccomend you don't.
     ],
   ]);
   expect(greetingFilter.match('hi hello everyone')).length(0);
@@ -60,10 +59,9 @@ test('replace', () => {
   expect(result[0]).toBe('bing');
 });
 
-
 /**
  * Apply a regex match to the result of a match
- * 
+ *
  */
 test('regex', () => {
   let greetingFilter: Filter;

@@ -62,10 +62,11 @@ export const parseValues = (values: Value[], sku: string): string[] => {
         const match = sku.match(functionValue.value);
         if (match && match[1]) flattenedValue.push(match[1]);
       }
-
     });
 
-    value.isFixedValue(singleValue, stringValue => flattenedValue.push(stringValue));
+    value.isFixedValue(singleValue, (stringValue) =>
+      flattenedValue.push(stringValue),
+    );
 
     return flattenedValue;
   };

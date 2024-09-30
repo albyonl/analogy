@@ -18,6 +18,7 @@ npm install analogy
 ```
 
 ### Quick Example:
+
 ```typescript
 import { Filter } from './filter';
 import { includes, excludes } from './operators.js';
@@ -27,7 +28,7 @@ import { fixed, dynamic, regex, replace } from './values';
 
 let simpleFilter = new Filter(['hello']);
 
-console.log(simpleFilter.match('hello there')); 
+console.log(simpleFilter.match('hello there'));
 // output: ['hello']
 // the simple filter matches 'hello' in the input.
 
@@ -36,31 +37,34 @@ console.log(simpleFilter.match('hello there'));
 let complexFilter = new Filter([
   // match inputs that include "hello" but exclude "world"
   [[includes('hello'), excludes('world')], [fixed('greeting')]],
-  
+
   // match inputs that include "morning" and transform it dynamically
   [[includes('morning')], [dynamic((input) => `${input}, have a great day!`)]],
-  
+
   // replace "bye" with "goodbye" if found
-  [[includes('bye')], [replace([dynamic((value) => value)], ['bye', 'goodbye'])]],
+  [
+    [includes('bye')],
+    [replace([dynamic((value) => value)], ['bye', 'goodbye'])],
+  ],
 
   // use regex to replace any version of "iphone x" with "iphone 10"
   [[includes('iphone x')], [replace([regex(/iPhone\s?(\w+)/i)], ['x', '10'])]],
 ]);
 
 // test with multiple different inputs
-console.log(complexFilter.match('hello there')); 
+console.log(complexFilter.match('hello there'));
 // output: ['greeting']
 
-console.log(complexFilter.match('good morning')); 
+console.log(complexFilter.match('good morning'));
 // output: ['good morning, have a great day!']
 
-console.log(complexFilter.match('time to say bye')); 
+console.log(complexFilter.match('time to say bye'));
 // output: ['goodbye']
 
-console.log(complexFilter.match('I have an iphone x')); 
+console.log(complexFilter.match('I have an iphone x'));
 // output: ['10']
 
-console.log(complexFilter.match('hello world')); 
+console.log(complexFilter.match('hello world'));
 // output: []  (Since it matches "hello" but also "world", it is excluded)
 ```
 

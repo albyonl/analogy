@@ -13,26 +13,29 @@ export class Filter {
     let output: string[] = [];
 
     for (const match of this.matches) {
-
       _match.isGroup(match, ([conditions, value]) => {
         let operatorResults: boolean[] = [];
 
         for (const condition of conditions) {
           if (condition.operator === 'includes') {
-            const sat = condition.operands.every((operand) => sku.includes(operand))
+            const sat = condition.operands.every((operand) =>
+              sku.includes(operand),
+            );
             operatorResults.push(sat);
           }
 
           if (condition.operator === 'any') {
-            const sat = condition.operands.some((operand) => sku.includes(operand));
+            const sat = condition.operands.some((operand) =>
+              sku.includes(operand),
+            );
             operatorResults.push(sat);
-        
           }
 
           if (condition.operator === 'excludes') {
-            const sat = !condition.operands.some((operand) => sku.includes(operand))
+            const sat = !condition.operands.some((operand) =>
+              sku.includes(operand),
+            );
             operatorResults.push(sat);
-          
           }
         }
 

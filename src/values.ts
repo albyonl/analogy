@@ -16,10 +16,12 @@ export const regex = (regex: RegExp): Value => {
 export const replace = (
   children: Value[],
   ...value: [string, string][]
-): Value  => {
-  return { type: 'function', value: { type: 'replace', value: value, children }};
+): Value => {
+  return {
+    type: 'function',
+    value: { type: 'replace', value: value, children },
+  };
 };
-
 
 /**
  * Wrapper which enables you to use a dynamic value
@@ -28,7 +30,6 @@ export const replace = (
 export const dynamic = (callback: (input: string) => string): Value => {
   return { type: 'dynamic', value: callback };
 };
-
 
 /**
  * Wrapper returning syntax for fixed values
