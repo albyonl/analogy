@@ -1,23 +1,41 @@
-import type { Value } from './types';
+import type { FixedValue, FunctionValue, Value } from './types';
 
 /**
  * Wrapper which enables regex match to be applied to the input value
  * @param {RegExp} regex the regex to match
- * @returns {FunctionValue} none operator with values
  */
-export const regex = (regex: RegExp): ['regex-match', RegExp] => {
-  return ['regex-match', regex];
+export const regex = (regex: RegExp): Value => {
+  return { type: 'function', value: { type: 'regex-match', value: regex } };
 };
 
 /**
  * Wrapper which enables you to apply a replace map to the returning value
  * @param {[string, string][]} map replacement map
  * @param {Value} value the output value of your filter
- * @returns {FunctionValue} none operator with values
  */
 export const replace = (
-  map: [string, string][],
-  value: Value,
-): ['replace', [string, string][], Value] => {
-  return ['replace', map, value];
+  children: Value[],
+  ...value: [string, string][]
+): Value => {
+  return {
+    type: 'function',
+    value: { type: 'replace', value: value, children },
+  };
+};
+
+/**
+ * Wrapper which enables you to use a dynamic value
+ * @param callback the callback function containing input string
+ */
+export const dynamic = (callback: (input: string) => string): Value => {
+  return { type: 'dynamic', value: callback };
+};
+
+/**
+ * Wrapper returning syntax for fixed values
+ * @param {fixed}
+ * @param {Value} value the output value of your filter
+ */
+export const fixed = (value: string): Value => {
+  return { type: 'fixed', value: value as FixedValue };
 };

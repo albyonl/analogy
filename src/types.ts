@@ -1,16 +1,25 @@
-export const FunctionValueLiterals = ['regex-match', 'replace'];
-
-export type Dynamic = (sku: string) => string;
-
-/**
- * Function values let you perform preset methods on ordinary values
- * They take a string literal which matches them to a function
- */
+export type FixedValue = string;
+export type DynamicValue = (sku: string) => string;
 export type FunctionValue =
-  | ['regex-match', RegExp] // regex
-  | ['replace', [string, string][], Value]; // recursive replace
+  | { type: 'regex-match'; value: RegExp }
+  | { type: 'replace'; value: [string, string][]; children: Value[] };
 
-export type Value = Dynamic | FunctionValue | string;
-export type Operator = ['any' | 'none' | 'all', ...string[]];
-export type Group = [Operator[] | string, Value | Value[]];
-export type Match = Group | Dynamic | string;
+export type ValueType = FixedValue | FunctionValue | DynamicValue;
+
+export type Value =
+  | string
+  | { type: 'function'; value: FunctionValue }
+  | { type: 'fixed'; value: FixedValue }
+  | { type: 'dynamic'; value: DynamicValue };
+
+export type Condition = {
+  operator: 'includes' | 'excludes' | 'any';
+  operands: string[];
+};
+
+export type IncludesCondition = Condition & { operator: 'includes' };
+export type ExcludesCondition = Condition & { operator: 'excludes' };
+export type AnyCondition = Condition & { operator: 'any' };
+
+export type Group = [Condition[], Value[]];
+export type Match = string | Group;

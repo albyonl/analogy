@@ -1,19 +1,18 @@
 export { Filter, FilterList } from './filter';
-export { not, includes, excludes, any } from './operators';
-export {
-  isOperators,
-  isDynamic,
-  isDynamicValue,
-  isFunctionValue,
-  isMultiValue,
-  isString,
-  isGroup,
-} from './helpers.js';
+export { includes, excludes, any } from './conditions';
+export { regex, replace, dynamic, fixed } from './values.js';
+export { value, match } from './helpers.js';
+
 export type {
-  Dynamic,
-  Match,
-  Operator,
-  Group,
-  Value,
+  FixedValue,
+  DynamicValue,
   FunctionValue,
+  ValueType,
+  Value,
+  Condition,
+  IncludesCondition,
+  ExcludesCondition,
+  AnyCondition,
+  Group,
+  Match,
 } from './types.js';

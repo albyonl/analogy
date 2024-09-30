@@ -1,9 +1,4 @@
-import {
-  isDynamicValue,
-  isString,
-  isFunctionValue,
-  isMultiValue,
-} from './helpers';
+import { value } from './helpers';
 import type { Value } from './types';
 
 /**
@@ -12,7 +7,7 @@ import type { Value } from './types';
  * @param sku
  * @returns {string[]} filters
  */
-export const parseValues = (value: Value | Value[], sku: string): string[] => {
+export const parseValues = (values: Value[], sku: string): string[] => {
   let parsed: string[] = [];
 
   /**
@@ -20,18 +15,14 @@ export const parseValues = (value: Value | Value[], sku: string): string[] => {
    * @param value
    * @returns {string[]} filters
    */
-  const getValue = (value: Value): string[] => {
+  const getSingleValue = (singleValue: Value): string[] => {
     let flattenedValue: string[] = [];
 
-    isDynamicValue(value, (dynamic) => {
-      flattenedValue.push(dynamic(sku));
-    });
+    value.isDynamicValue(singleValue, (dynamic) =>
+      flattenedValue.push(dynamic(sku)),
+    );
 
-    isString(value, (fixed) => {
-      flattenedValue.push(fixed);
-    });
-
-    isFunctionValue(value, (functionValue) => {
+    value.isFunctionValue(singleValue, (functionValue) => {
       /**
        * Function which wraps a return value and replaces based on a map
        * Will re-call getValue to enable nested values
@@ -43,7 +34,7 @@ export const parseValues = (value: Value | Value[], sku: string): string[] => {
         fvalue: Value,
         replaceMap: [string, string][],
       ): string[] => {
-        const replacedValues = getValue(fvalue).flatMap((replaceSet) => {
+        const replacedValues = getSingleValue(fvalue).flatMap((replaceSet) => {
           let replacedSet: string[] = [];
           for (const [source, dest] of replaceMap) {
             replacedSet.push(replaceSet.replaceAll(source, dest));
@@ -56,37 +47,34 @@ export const parseValues = (value: Value | Value[], sku: string): string[] => {
       /**
        * Replace replaces the return value based on a provided map
        */
-      if (functionValue[0] === 'replace') {
-        const [_, maps, fvalue] = functionValue;
-        flattenedValue.push(...parseReplacedValues(fvalue, maps));
+      if (functionValue.type === 'replace') {
+        for (const child of functionValue.children) {
+          flattenedValue.push(
+            ...parseReplacedValues(child, functionValue.value),
+          );
+        }
       }
 
       /**
        * Regex returns the matched value from a regex pattern
        */
-      if (functionValue[0] === 'regex-match') {
-        const [_, regex] = functionValue;
-        const match = sku.match(regex);
+      if (functionValue.type === 'regex-match') {
+        const match = sku.match(functionValue.value);
         if (match && match[1]) flattenedValue.push(match[1]);
       }
     });
 
+    value.isFixedValue(singleValue, (stringValue) =>
+      flattenedValue.push(stringValue),
+    );
+
     return flattenedValue;
   };
 
-  isMultiValue(
-    value,
-    (multi) => {
-      for (const val of multi) {
-        const result = getValue(val);
-        if (result != null) parsed.push(...result);
-      }
-    },
-    (single) => {
-      const result = getValue(single);
-      if (result !== null) parsed.push(...result);
-    },
-  );
+  for (const value of values) {
+    const result = getSingleValue(value);
+    parsed.push(...result);
+  }
 
   return parsed.filter((val) => val !== null);
 };

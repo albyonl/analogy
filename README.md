@@ -20,70 +20,53 @@ npm install analogy
 ### Quick Example:
 
 ```typescript
-import { Filter, includes, excludes } from 'analogy';
+import { Filter } from './filter';
+import { includes, excludes } from './operators.js';
+import { fixed, dynamic, regex, replace } from './values';
 
-// Define a filter for animal-related words
-const animalFilter = new Filter([
-  // Match a single value
-  'meow',
+// simple example
 
-  // Match either value in the tuple ("bark" or "woof")
-  ['bark', 'woof'],
+let simpleFilter = new Filter(['hello']);
 
-  // Match a dynamic value using a function (e.g., "<word> cat")
+console.log(simpleFilter.match('hello there'));
+// output: ['hello']
+// the simple filter matches 'hello' in the input.
+
+// define multiple filters with various operators
+
+let complexFilter = new Filter([
+  // match inputs that include "hello" but exclude "world"
+  [[includes('hello'), excludes('world')], [fixed('greeting')]],
+
+  // match inputs that include "morning" and transform it dynamically
+  [[includes('morning')], [dynamic((input) => `${input}, have a great day!`)]],
+
+  // replace "bye" with "goodbye" if found
   [
-    'cat',
-    (input) => {
-      const match = input.match(/\b(\w+)\s+cat\b/); // Match words like "ragdoll cat"
-      if (match) return match[0]; // Return the matched word (e.g., "ragdoll cat")
-    },
+    [includes('bye')],
+    [replace([dynamic((value) => value)], ['bye', 'goodbye'])],
   ],
 
-  // Use operators to match when "dog" is included and "cat" is excluded
-  [
-    [includes('dog'), excludes('cat')],
-    ['dog detected', 'no cats present'],
-  ],
-
-  // Use function values to replace animal noises
-  [
-    [
-      [includes('bird'), includes('cat')],
-      replace(
-        [
-          ['howl', 'chirp'],
-          ['squeak', 'meow'],
-        ],
-        (value) => value,
-      ),
-    ],
-  ],
+  // use regex to replace any version of "iphone x" with "iphone 10"
+  [[includes('iphone x')], [replace([regex(/iPhone\s?(\w+)/i)], ['x', '10'])]],
 ]);
 
-// Run some test cases:
-console.log(animalFilter.match('dog poodle barks!'));
-// Output: ["woof", "dog detected", "no cats present"]
+// test with multiple different inputs
+console.log(complexFilter.match('hello there'));
+// output: ['greeting']
 
-console.log(animalFilter.match('ragdoll cat meows at the dog'));
-// Output: ["meow", "ragdoll cat"]
+console.log(complexFilter.match('good morning'));
+// output: ['good morning, have a great day!']
 
-console.log(animalFilter.match('The lion roars, and the dog barks.'));
-// Output: ["woof", "dog detected", "no cats present"]
+console.log(complexFilter.match('time to say bye'));
+// output: ['goodbye']
 
-console.log(animalFilter.match('The bird howls, and the cat squeaks'));
-// Output ["chirp", "meow"]
+console.log(complexFilter.match('I have an iphone x'));
+// output: ['10']
+
+console.log(complexFilter.match('hello world'));
+// output: []  (Since it matches "hello" but also "world", it is excluded)
 ```
-
----
-
-Analogy allows you to define matching rules in different forms:
-
-- **Single Values**: Simple string matches.
-- **Tuples**: Group multiple related values to match any of them.
-- **Dynamic Functions**: Use custom logic for dynamic matching, such as regex patterns.
-- **Multiple Outputs**: Return an array of output values for each match.
-
-You can combine these with operators for more complex logic.
 
 ### Operators
 
@@ -91,16 +74,10 @@ You can combine these with operators for more complex logic.
 - **`includes(...args: string[])`**: Matches if **all** of the specified strings are found in the input.
 - **`excludes(...args: string[])`**: Matches if **none** of the specified strings are found in the input.
 
-### Multiple Output Values
+### Function Values
 
-To return multiple output values for a single match, simply provide an array of outputs as the second argument:
-
-```typescript
-const filter = new Filter([
-  [includes('dog'), ['dog found', 'barking detected']],
-]);
-filter.match('The dog is barking!'); // ["dog found", "barking detected"]
-```
+- **`replace(children: Value[], ...map: [string, string][])`**: Takes in a child value, and performs a replace on its result with specified replace map
+- **`regex(...args: string[])`**: Matches regex on the value, and returns the result
 
 ---
 
