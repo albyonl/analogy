@@ -1,6 +1,6 @@
 export { Filter, FilterList } from './filter';
 export { includes, excludes, any  } from './conditions';
-export { regex, replace, dynamic } from './values.js'
+export { regex, replace, dynamic, fixed } from './values.js'
 export {
   value,
   match
