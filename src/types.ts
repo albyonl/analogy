@@ -1,7 +1,7 @@
 export type FixedValue = string;
 export type DynamicValue = (sku: string) => string;
 export type FunctionValue =
-  | { type: 'regex-match'; value: RegExp }
+  | { type: 'regex-match'; value: RegExp | string }
   | { type: 'replace'; value: [string, string][]; children: Value[] };
 
 export type ValueType = FixedValue | FunctionValue | DynamicValue;

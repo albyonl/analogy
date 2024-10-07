@@ -10,6 +10,7 @@ test('mixed', () => {
   const values: Value[] = [
     replace(['hello'], ['hello', '']),
     regex(/\btest\b/g),
+    regex('/\\btest\\b/g'),
     dynamic((input) => input),
     'test',
   ];

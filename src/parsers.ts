@@ -59,7 +59,11 @@ export const parseValues = (values: Value[], sku: string): string[] => {
        * Regex returns the matched value from a regex pattern
        */
       if (functionValue.type === 'regex-match') {
-        const match = sku.match(functionValue.value);
+        const match = sku.match(
+          typeof functionValue.value === 'string'
+            ? new RegExp(functionValue.value)
+            : functionValue.value,
+        );
         if (match && match[1]) flattenedValue.push(match[1]);
       }
     });

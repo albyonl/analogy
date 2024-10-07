@@ -4,7 +4,7 @@ import type { FixedValue, FunctionValue, Value } from './types';
  * Wrapper which enables regex match to be applied to the input value
  * @param {RegExp} regex the regex to match
  */
-export const regex = (regex: RegExp): Value => {
+export const regex = (regex: RegExp | string): Value => {
   return { type: 'function', value: { type: 'regex-match', value: regex } };
 };
 
