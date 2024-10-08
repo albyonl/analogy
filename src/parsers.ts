@@ -34,14 +34,13 @@ export const parseValues = (values: Value[], sku: string): string[] => {
         fvalue: Value,
         replaceMap: [string, string][],
       ): string[] => {
-        const replacedValues = getSingleValue(fvalue).flatMap((replaceSet) => {
-          let replacedSet: string[] = [];
+        const vals = getSingleValue(fvalue);
+        return vals.map((val) => {
           for (const [source, dest] of replaceMap) {
-            replacedSet.push(replaceSet.replaceAll(source, dest));
+            if (val === source) return dest;
           }
-          return replacedSet;
+          return val;
         });
-        return replacedValues;
       };
 
       /**
