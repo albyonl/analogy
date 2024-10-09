@@ -35,9 +35,10 @@ export const parseValues = (values: Value[], sku: string): string[] => {
         replaceMap: [string, string][],
       ): string[] => {
         const vals = getSingleValue(fvalue);
+        console.log('value is', vals);
         return vals.map((val) => {
           for (const [source, dest] of replaceMap) {
-            if (val === source) return dest;
+            return val.replace(source, dest);
           }
           return val;
         });
@@ -58,11 +59,11 @@ export const parseValues = (values: Value[], sku: string): string[] => {
        * Regex returns the matched value from a regex pattern
        */
       if (functionValue.type === 'regex-match') {
-        const match = sku.match(
+        const regex =
           typeof functionValue.value === 'string'
             ? new RegExp(functionValue.value)
-            : functionValue.value,
-        );
+            : functionValue.value;
+        const match = regex.exec(sku);
         if (match && match[1]) flattenedValue.push(match[1]);
       }
     });
