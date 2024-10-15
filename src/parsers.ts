@@ -35,10 +35,9 @@ export const parseValues = (values: Value[], sku: string): string[] => {
         replaceMap: [string, string][],
       ): string[] => {
         const vals = getSingleValue(fvalue);
-        console.log('value is', vals);
         return vals.map((val) => {
           for (const [source, dest] of replaceMap) {
-            return val.replace(source, dest);
+            if (source === val) return dest;
           }
           return val;
         });
